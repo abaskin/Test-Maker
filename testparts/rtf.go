@@ -3,7 +3,7 @@ package testparts
 import (
 	"fmt"
 
-	rtfdoc "github.com/abaskin/Test-Maker/v2/rtf-doc"
+	rtfdoc "github.com/abaskin/Test-Maker/rtf-doc"
 
 	"github.com/chonla/roman-number-go"
 )

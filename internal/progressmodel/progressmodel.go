@@ -3,7 +3,7 @@ package progressmodel
 import (
 	"sync"
 
-	icon "github.com/abaskin/Test-Maker/v2/internal/icons"
+	icon "github.com/abaskin/Test-Maker/internal/icons"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"

@@ -12,7 +12,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/abaskin/Test-Maker/v2/testparts/resources"
+	"github.com/abaskin/Test-Maker/testparts/resources"
 
 	"github.com/phayes/freeport"
 	"golang.org/x/oauth2"
