@@ -176,18 +176,19 @@ type PassageCompletionSt struct {
 }
 
 type TestHeadSt struct {
-	Subject  string
-	Grade    string
-	School   string
-	Title    string
-	RTFTitle string
-	Logo     string
-	Date     string
-	Points   uint
-	Time     uint
-	Quiz     bool
-	NoKey    bool
-	Dsn      string
+	Subject         string
+	Grade           string
+	School          string
+	Title           string
+	RTFTitle        string
+	Logo            string
+	Date            string
+	Points          uint
+	Time            uint
+	Quiz            bool
+	NoKey           bool
+	Dsn             string
+	FormCredentials string
 }
 
 type TestBundleSt struct {

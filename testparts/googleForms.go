@@ -36,18 +36,19 @@ const (
 )
 
 type GoogleFormSt struct {
-	form     *forms.Form
-	Status   GoogleFormStatus
-	authWait *sync.WaitGroup
-	authCode string
-	port     int
-	service  *forms.FormsService
-	nextItem int64
+	form            *forms.Form
+	Status          GoogleFormStatus
+	authWait        *sync.WaitGroup
+	authCode        string
+	port            int
+	service         *forms.FormsService
+	nextItem        int64
+	formCredentials string
 }
 
 var prefStore *Preference
 
-func NewGoogleForm(dsn string) *GoogleFormSt {
+func NewGoogleForm(dsn, formCredentials string) *GoogleFormSt {
 	port, err := freeport.GetFreePort()
 	if err != nil {
 		port = 8321
@@ -56,16 +57,17 @@ func NewGoogleForm(dsn string) *GoogleFormSt {
 	prefStore = newPreference(dsn)
 
 	return &GoogleFormSt{
-		authWait: &sync.WaitGroup{},
-		port:     port,
-		nextItem: 0,
+		authWait:        &sync.WaitGroup{},
+		port:            port,
+		nextItem:        0,
+		formCredentials: formCredentials,
 	}
 }
 
 func (gf *GoogleFormSt) Create(title, documentTitle, desc string) (*GoogleFormSt, error) {
 	ctx := context.Background()
 
-	formCredentials := fmt.Sprintf(resources.GoogleFormCredentials, gf.port)
+	formCredentials := fmt.Sprintf(gf.formCredentials, gf.port)
 
 	// If modifying these scopes, delete your previously saved token.json.
 	config, err := google.ConfigFromJSON(

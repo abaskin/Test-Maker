@@ -128,20 +128,21 @@ func MakeSections(testJSON TestJSONSt, assetDir string, showAll bool) ([]Section
 	return sections, nil
 }
 
-func MakeBundle(dsn string, testJSON TestJSONSt, sections []SectionSt) (*arraylist.List[*TestBundleSt], error) {
+func MakeBundle(dsn, formCredentials string, testJSON TestJSONSt, sections []SectionSt) (*arraylist.List[*TestBundleSt], error) {
 	testHead := TestHeadSt{
-		Subject:  testJSON.Subject,
-		Grade:    testJSON.Grade,
-		School:   testJSON.School,
-		Title:    testJSON.Title,
-		RTFTitle: testJSON.RTFTitle,
-		Logo:     testJSON.Logo,
-		Time:     testJSON.Time,
-		Date:     testJSON.Date,
-		NoKey:    testJSON.NoKey,
-		Quiz:     false,
-		Points:   0,
-		Dsn:      dsn,
+		Subject:         testJSON.Subject,
+		Grade:           testJSON.Grade,
+		School:          testJSON.School,
+		Title:           testJSON.Title,
+		RTFTitle:        testJSON.RTFTitle,
+		Logo:            testJSON.Logo,
+		Time:            testJSON.Time,
+		Date:            testJSON.Date,
+		NoKey:           testJSON.NoKey,
+		Quiz:            false,
+		Points:          0,
+		Dsn:             dsn,
+		FormCredentials: formCredentials,
 	}
 
 	for _, s := range sections {
@@ -370,7 +371,7 @@ func (bundle *TestBundleSt) createForm(pathStrings PathStrSt, flags FlagsSt, tes
 		if title == "" {
 			title = bundle.Title
 		}
-		form, err := NewGoogleForm(bundle.Dsn).Create(title, bundle.Student, "")
+		form, err := NewGoogleForm(bundle.Dsn, bundle.FormCredentials).Create(title, bundle.Student, "")
 		if err != nil {
 			return fmt.Errorf("unable to create Google Form, error: %w", err)
 		}
