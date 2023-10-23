@@ -370,7 +370,7 @@ func (bundle *TestBundleSt) createForm(pathStrings PathStrSt, flags FlagsSt, tes
 		if title == "" {
 			title = bundle.Title
 		}
-		form, err := NewGoogleForm(bundle.Dsn).Create(title, bundle.Student, "")
+		form, err := NewGoogleForm(bundle.Dsn, bundle.FormCredentials).Create(title, bundle.Student, "")
 		if err != nil {
 			return fmt.Errorf("unable to create Google Form, error: %w", err)
 		}
