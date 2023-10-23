@@ -1,4 +1,4 @@
-module github.com/abaskin/Test-Maker/v2
+module github.com/abaskin/Test-Maker
 
 go 1.20
 
