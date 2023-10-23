@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="256" height="256" viewBox="0 0 256 256" xml:space="preserve">
+<desc>Created with Fabric.js 1.7.22</desc>
+<defs>
+</defs>
+<g transform="translate(128 128) scale(0.72 0.72)" style="">
+	<g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(-175.05 -175.05000000000004) scale(3.89 3.89)" >
+	<path d="M 78.362 56.638 H 11.637 C 5.22 56.638 0 51.417 0 45 s 5.22 -11.637 11.637 -11.637 h 66.725 C 84.779 33.363 90 38.583 90 45 S 84.779 56.638 78.362 56.638 z M 11.637 35.363 C 6.323 35.363 2 39.686 2 45 c 0 5.314 4.323 9.638 9.637 9.638 h 66.725 C 83.677 54.638 88 50.314 88 45 c 0 -5.314 -4.323 -9.637 -9.638 -9.637 H 11.637 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+	<path d="M 46.605 49.391 h -3.21 c -2.425 0 -4.391 -1.966 -4.391 -4.391 v 0 c 0 -2.425 1.966 -4.391 4.391 -4.391 h 3.21 c 2.425 0 4.391 1.966 4.391 4.391 v 0 C 50.996 47.425 49.03 49.391 46.605 49.391 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+	<path d="M 30.105 49.391 h -3.21 c -2.425 0 -4.391 -1.966 -4.391 -4.391 v 0 c 0 -2.425 1.966 -4.391 4.391 -4.391 h 3.21 c 2.425 0 4.391 1.966 4.391 4.391 v 0 C 34.496 47.425 32.53 49.391 30.105 49.391 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+	<path d="M 13.605 49.391 h -3.21 c -2.425 0 -4.391 -1.966 -4.391 -4.391 v 0 c 0 -2.425 1.966 -4.391 4.391 -4.391 h 3.21 c 2.425 0 4.391 1.966 4.391 4.391 v 0 C 17.996 47.425 16.03 49.391 13.605 49.391 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+</g>
+</g>
+</svg>
