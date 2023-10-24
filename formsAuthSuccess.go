@@ -1,4 +1,4 @@
-package resources
+package testparts
 
 var GoogleFormAuthSuccess = []byte(`
 		<!DOCTYPE html>
