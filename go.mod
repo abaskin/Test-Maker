@@ -1,4 +1,4 @@
-module github.com/abaskin/Test-Maker
+module github.com/abaskin/testparts
 
 go 1.20
 

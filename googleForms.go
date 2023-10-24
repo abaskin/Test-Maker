@@ -12,8 +12,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/abaskin/Test-Maker/testparts/resources"
-
 	"github.com/phayes/freeport"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -359,7 +357,7 @@ func newHandler(authWait *sync.WaitGroup, authCode *string) http.Handler {
 			*authCode = u.Query()["code"][0]
 			authWait.Done()
 
-			writer.Write(resources.GoogleFormAuthSuccess)
+			writer.Write(GoogleFormAuthSuccess)
 		},
 	)
 
