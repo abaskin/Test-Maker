@@ -38,35 +38,37 @@ func NewProgressModel(wind fyne.Window) *ProgressModel {
 	return newModel
 }
 
-func (p *ProgressModel) SetWait() {
+func (p *ProgressModel) SetWait() *ProgressModel {
 	p.wait.Add(1)
+	return p
 }
 
-func (p *ProgressModel) Done() {
+func (p *ProgressModel) Done() *ProgressModel {
 	p.wait.Done()
+	return p
 }
 
-func (p *ProgressModel) Wait() {
+func (p *ProgressModel) Wait() *ProgressModel {
 	p.wait.Wait()
+	return p
 }
 
-func (p *ProgressModel) ShowError(err error, msg ...string) {
-	for _, m := range msg {
-		p.Show(m, false, false)
-	}
-	p.Show(err.Error(), true, true)
+func (p *ProgressModel) ShowError(err error, msg ...string) *ProgressModel {
+	p.Show(false, false, msg...)
+	p.Show(true, true, err.Error())
 	p.Wait()
+	return p
 }
 
-func (p *ProgressModel) Show(newLine string, isError, done bool) {
+func (p *ProgressModel) Show(isError, done bool, newLine ...string) *ProgressModel {
 	if p.modal != nil {
 		p.modal.Hide()
 	}
 	switch isError {
 	case true:
-		p.showError(newLine)
+		p.showError(newLine[0])
 	case false:
-		p.progressList = append(p.progressList, newLine)
+		p.progressList = append(p.progressList, newLine...)
 		p.modal = widget.NewModalPopUp(
 			widget.NewRichTextWithText("Nothing to see here, yet..."),
 			p.window.Canvas(),
@@ -74,6 +76,7 @@ func (p *ProgressModel) Show(newLine string, isError, done bool) {
 		p.modal.Content = p.progressBoxInfi(done)
 		p.modal.Show()
 	}
+	return p
 }
 
 func (p *ProgressModel) Clear() *ProgressModel {
@@ -81,31 +84,47 @@ func (p *ProgressModel) Clear() *ProgressModel {
 	return p
 }
 
-func (p *ProgressModel) ShowProgress(newLine string, minVal, maxVal float64) {
+func (p *ProgressModel) ShowProgress(minVal, maxVal float64,
+	textFormatter func() string, newLine ...string) *ProgressModel {
 	if p.modal != nil {
 		p.modal.Hide()
 	}
-	p.progressList = append(p.progressList, newLine)
+	p.progressList = append(p.progressList, newLine...)
 	p.modal = widget.NewModalPopUp(
 		widget.NewRichTextWithText("Nothing to see here, yet..."),
 		p.window.Canvas(),
 	)
-	p.modal.Content = p.progressBox(minVal, maxVal)
+	p.modal.Content = p.progressBox(minVal, maxVal, textFormatter)
 	p.modal.Show()
+	return p
 }
 
-func (p *ProgressModel) UpdateProgress(value float64) {
-	p.progressBar.SetValue(value)
+func (p *ProgressModel) UpdateProgress(values ...interface{}) *ProgressModel {
+	for _, value := range values {
+		switch v := value.(type) {
+		case float64:
+			p.progressBar.SetValue(v)
+		case string:
+			last := len(p.progressList) - 1
+			p.progressList[last] = v
+			p.modal.Content.(*fyne.Container).Objects[last] = p.makeProgressList()[last]
+			p.modal.Refresh()
+		default:
+		}
+	}
+	return p
 }
 
-func (p *ProgressModel) Hide() {
+func (p *ProgressModel) Hide() *ProgressModel {
 	if p.modal != nil {
 		p.modal.Hide()
 	}
+	return p
 }
 
-func (p *ProgressModel) Bar(show bool) {
+func (p *ProgressModel) Bar(show bool) *ProgressModel {
 	p.infiniteProgressBar = show
+	return p
 }
 
 func (p *ProgressModel) showError(err string) {
@@ -141,11 +160,14 @@ func (p *ProgressModel) modalText(text string) *widget.RichText {
 	)
 }
 
-func (p *ProgressModel) progressBox(minVal, maxVal float64) *fyne.Container {
+func (p *ProgressModel) progressBox(minVal, maxVal float64, textFormatter func() string) *fyne.Container {
 	p.progressBar = &widget.ProgressBar{
 		Min:   minVal,
 		Max:   maxVal,
 		Value: 0,
+	}
+	if textFormatter != nil {
+		p.progressBar.TextFormatter = textFormatter
 	}
 	pBox := container.NewVBox()
 	for _, c := range p.makeProgressList() {
