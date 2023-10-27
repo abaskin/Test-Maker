@@ -15,30 +15,30 @@ import (
 )
 
 type TestQuestion struct {
-	question      *testparts.GormQuestion
+	Question      *testparts.GormQuestion
+	Options       *LabelRadioGroup
+	Answer        string
 	allocTime     time.Duration
-	options       *LabelRadioGroup
 	next          *widget.Button
-	answer        string
 	correctAnswer string
 }
 
 func NewTestQuestion(question *testparts.GormQuestion,
 	allocTime time.Duration, next *widget.Button) *TestQuestion {
 	q := &TestQuestion{
-		question:  question,
+		Question:  question,
 		allocTime: allocTime,
 		next:      next,
 	}
-	q.options = NewLabelRadioGroup(q, []string{}, nil)
-	for _, choice := range q.question.Choices {
-		q.options.Append(choice.Choice)
+	q.Options = NewLabelRadioGroup(q, []string{}, nil)
+	for _, choice := range q.Question.Choices {
+		q.Options.Append(choice.Choice)
 		if choice.Answer {
 			q.correctAnswer = choice.Choice
 		}
 	}
-	q.options.onChanged = func(s string) {
-		q.answer = s
+	q.Options.onChanged = func(s string) {
+		q.Answer = s
 	}
 	return q
 }
@@ -75,16 +75,20 @@ func (q *TestQuestion) Show() *fyne.Container {
 	return container.NewVBox(
 		layout.NewSpacer(),
 		&widget.Label{
-			Text:      q.question.Question,
+			Text:      q.Question.Question,
 			Wrapping:  fyne.TextWrapWord,
 			Alignment: fyne.TextAlignCenter,
 			TextStyle: fyne.TextStyle{
 				Bold: true,
 			},
 		},
-		container.NewCenter(q.options),
+		container.NewCenter(q.Options),
 		layout.NewSpacer(),
 	)
+}
+
+func (q *TestQuestion) Correct() bool {
+	return q.Answer == q.correctAnswer
 }
 
 type LabelRadioGroup struct {
@@ -107,12 +111,12 @@ func NewLabelRadioGroup(question *TestQuestion, options []string,
 			newRG.onChanged(newRG.Answer())
 		}
 	}
-	newRG.Append(options...)
+	newRG.Add(options...)
 
 	return newRG
 }
 
-func (l *LabelRadioGroup) Append(options ...string) {
+func (l *LabelRadioGroup) Add(options ...string) {
 	for _, opt := range options {
 		label := fmt.Sprintf("%c.  %s", 'A'+l.options.Size(), opt)
 		l.options.Put(label, opt)
