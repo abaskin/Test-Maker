@@ -18,6 +18,7 @@ type ProgressModel struct {
 	infiniteProgressBar bool
 	progressBar         *widget.ProgressBar
 	wait                sync.WaitGroup
+	waitCount           uint8
 }
 
 type ProgressSt struct {
@@ -34,17 +35,20 @@ func NewProgressModel(wind fyne.Window) *ProgressModel {
 		modal:               nil,
 		infiniteProgressBar: true,
 		wait:                sync.WaitGroup{},
+		waitCount:           0,
 	}
 	return newModel
 }
 
 func (p *ProgressModel) SetWait() *ProgressModel {
 	p.wait.Add(1)
+	p.waitCount += 1
 	return p
 }
 
 func (p *ProgressModel) Done() *ProgressModel {
 	p.wait.Done()
+	p.waitCount -= 1
 	return p
 }
 
@@ -53,29 +57,41 @@ func (p *ProgressModel) Wait() *ProgressModel {
 	return p
 }
 
+func (p *ProgressModel) Waiting() bool {
+	return p.waitCount > 0
+}
+
 func (p *ProgressModel) ShowError(err error, msg ...string) *ProgressModel {
-	p.Show(false, false, msg...)
-	p.Show(true, true, err.Error())
-	p.Wait()
+	p.Clear().
+		SetWait().
+		Show(msg...).
+		Show("The following error has occurred.").
+		ShowDone(err.Error()).
+		Wait()
 	return p
 }
 
-func (p *ProgressModel) Show(isError, done bool, newLine ...string) *ProgressModel {
+func (p *ProgressModel) Show(newLine ...string) *ProgressModel {
+	return p.doShow(false, newLine...)
+}
+
+func (p *ProgressModel) ShowDone(newLine ...string) *ProgressModel {
+	return p.doShow(true, newLine...)
+}
+
+func (p *ProgressModel) doShow(done bool, newLine ...string) *ProgressModel {
 	if p.modal != nil {
 		p.modal.Hide()
 	}
-	switch isError {
-	case true:
-		p.showError(newLine[0])
-	case false:
-		p.progressList = append(p.progressList, newLine...)
-		p.modal = widget.NewModalPopUp(
-			widget.NewRichTextWithText("Nothing to see here, yet..."),
-			p.window.Canvas(),
-		)
-		p.modal.Content = p.progressBoxInfi(done)
-		p.modal.Show()
-	}
+
+	p.progressList = append(p.progressList, newLine...)
+	p.modal = widget.NewModalPopUp(
+		widget.NewRichTextWithText("Nothing to see here, yet..."),
+		p.window.Canvas(),
+	)
+	p.modal.Content = p.progressBoxInfi(done)
+	p.modal.Show()
+
 	return p
 }
 
@@ -125,25 +141,6 @@ func (p *ProgressModel) Hide() *ProgressModel {
 func (p *ProgressModel) Bar(show bool) *ProgressModel {
 	p.infiniteProgressBar = show
 	return p
-}
-
-func (p *ProgressModel) showError(err string) {
-	p.SetWait()
-	p.modal = widget.NewModalPopUp(
-		container.NewVBox(
-			p.modalText("The following error has occurred."),
-			p.modalText(err),
-			widget.NewButton(
-				"OK",
-				func() {
-					p.modal.Hide()
-					p.wait.Done()
-				},
-			),
-		),
-		p.window.Canvas(),
-	)
-	p.modal.Show()
 }
 
 func (p *ProgressModel) modalText(text string) *widget.RichText {

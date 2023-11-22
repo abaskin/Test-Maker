@@ -1,15 +1,23 @@
 module github.com/abaskin/testparts
 
-go 1.20
+go 1.21
 
 require (
 	fyne.io/fyne/v2 v2.4.1
+	fyne.io/x/fyne v0.0.0-20231020065621-89b4a4aea27d
 	github.com/aldinokemal/go-aiken v0.0.0-20200804023432-8ed1c267e9cf
 	github.com/chonla/roman-number-go v0.0.0-20181101035413-6768129de021
 	github.com/daichi-m/go18ds v1.12.1
+	github.com/ebitengine/oto/v3 v3.1.0
+	github.com/eclipse/paho.golang v0.12.0
+	github.com/enriquebris/goconcurrentqueue v0.7.0
+	github.com/looplab/fsm v1.0.1
 	github.com/nwillc/genfuncs v0.20.2
 	github.com/phayes/freeport v0.0.0-20220201140144-74d24b5ae9f5
+	github.com/pkg/errors v0.9.1
 	github.com/rwestlund/gotex v0.0.0-20170412080108-3c68d9bfff3b
+	github.com/thanhpk/randstr v1.0.6
+	github.com/thoas/go-funk v0.9.3
 	golang.org/x/oauth2 v0.13.0
 	google.golang.org/api v0.148.0
 	gorm.io/datatypes v1.2.0
@@ -22,6 +30,7 @@ require (
 	cloud.google.com/go/compute v1.23.0 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/ebitengine/purego v0.5.0 // indirect
 	github.com/fredbi/uri v1.0.0 // indirect
 	github.com/fyne-io/gl-js v0.0.0-20220119005834-d2da28d9ccfe // indirect
 	github.com/go-gl/gl v0.0.0-20211210172815-726fda9656d6 // indirect
@@ -35,6 +44,7 @@ require (
 	github.com/googleapis/enterprise-certificate-proxy v0.3.1 // indirect
 	github.com/googleapis/gax-go/v2 v2.12.0 // indirect
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
+	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/pgx/v5 v5.4.3 // indirect
@@ -51,6 +61,7 @@ require (
 	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e // indirect
 	golang.org/x/image v0.11.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
+	golang.org/x/sync v0.4.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect

@@ -3,36 +3,42 @@ package testquestion
 import (
 	"fmt"
 	"strings"
+	"sync"
 	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/test"
 	"fyne.io/fyne/v2/widget"
 	"github.com/abaskin/testparts"
+	"github.com/daichi-m/go18ds/lists/arraylist"
 	"github.com/daichi-m/go18ds/maps/linkedhashmap"
 )
 
 type TestQuestion struct {
 	Question      *testparts.GormQuestion
 	Options       *LabelRadioGroup
+	OptionList    *arraylist.List[*ClickText]
 	Answer        string
+	Done          bool
 	allocTime     time.Duration
 	next          *widget.Button
 	correctAnswer string
 }
 
-func NewTestQuestion(question *testparts.GormQuestion,
-	allocTime time.Duration, next *widget.Button) *TestQuestion {
+func NewTestQuestion(question *testparts.GormQuestion, allocTime time.Duration,
+	next *widget.Button) *TestQuestion {
 	q := &TestQuestion{
-		Question:  question,
-		allocTime: allocTime,
-		next:      next,
+		Question:   question,
+		OptionList: arraylist.New[*ClickText](),
+		Done:       false,
+		allocTime:  allocTime,
+		next:       next,
 	}
 	q.Options = NewLabelRadioGroup(q, []string{}, nil)
 	for _, choice := range q.Question.Choices {
-		q.Options.Append(choice.Choice)
+		q.Options.Add(choice.Choice)
+		q.OptionList.Add(NewClickText(q, choice))
 		if choice.Answer {
 			q.correctAnswer = choice.Choice
 		}
@@ -43,11 +49,14 @@ func NewTestQuestion(question *testparts.GormQuestion,
 	return q
 }
 
-func (q *TestQuestion) Ask(countDown *widget.ProgressBar, content *fyne.Container) {
+func (q *TestQuestion) Ask(countDown *widget.ProgressBar, content *fyne.Container,
+	fullWindow *fyne.Container, qDone *sync.WaitGroup) {
 	*content = *q.Show()
+	content.Refresh()
 
-	qDone := make(chan bool)
-	q.next.OnTapped = func() { qDone <- true }
+	if q.next != nil {
+		q.next.OnTapped = func() { qDone.Done() }
+	}
 
 	countDown.Min = 0
 	countDown.Max = float64(q.allocTime.Milliseconds())
@@ -62,33 +71,69 @@ func (q *TestQuestion) Ask(countDown *widget.ProgressBar, content *fyne.Containe
 				timeRemain -= time.Millisecond
 			}
 		})
-	qTimer := time.AfterFunc(q.allocTime, func() { qDone <- true })
 
-	<-qDone
-	qTimer.Stop()
+	qDone.Wait()
 	qTicker.Stop()
 
-	q.next.OnTapped = nil
+	if q.next != nil {
+		q.next.OnTapped = nil
+	}
 }
 
 func (q *TestQuestion) Show() *fyne.Container {
-	return container.NewVBox(
-		layout.NewSpacer(),
-		&widget.Label{
-			Text:      q.Question.Question,
-			Wrapping:  fyne.TextWrapWord,
-			Alignment: fyne.TextAlignCenter,
-			TextStyle: fyne.TextStyle{
-				Bold: true,
+	showContainer := container.NewVBox(
+		&widget.RichText{
+			Wrapping:   fyne.TextWrapWord,
+			Scroll:     container.ScrollNone,
+			Truncation: fyne.TextTruncateOff,
+			Segments: []widget.RichTextSegment{
+				&widget.TextSegment{
+					Text: q.Question.Question,
+					Style: widget.RichTextStyle{
+						TextStyle: fyne.TextStyle{
+							Bold: true,
+						},
+						Alignment: fyne.TextAlignCenter,
+						SizeName:  "QuestionFontSize",
+						ColorName: "QuestionColor",
+					},
+				},
 			},
 		},
-		container.NewCenter(q.Options),
-		layout.NewSpacer(),
 	)
+
+	q.OptionList.Each(func(_ int, opt *ClickText) {
+		showContainer.Add(opt)
+	})
+
+	return showContainer
 }
 
 func (q *TestQuestion) Correct() bool {
 	return q.Answer == q.correctAnswer
+}
+
+func (q *TestQuestion) AnswerID() uint {
+	for _, c := range q.Question.Choices {
+		if q.Answer == c.Choice {
+			return c.ID
+		}
+	}
+	return 0
+}
+
+func (q *TestQuestion) SetSelect(keyPressed fyne.KeyName) {
+	if keyPressed == fyne.KeyReturn {
+		test.Tap(q.next)
+	}
+	q.OptionList.Find(
+		func(_ int, c *ClickText) bool {
+			if strings.HasPrefix(
+				c.RichText.Segments[0].(*widget.TextSegment).Text, string(keyPressed)) {
+				test.Tap(c)
+			}
+			return false
+		})
 }
 
 type LabelRadioGroup struct {
@@ -138,4 +183,65 @@ func (l *LabelRadioGroup) SetSelect(keyPressed fyne.KeyName) {
 	}); opt != "" {
 		l.SetSelected(opt)
 	}
+}
+
+func formatChoice(choice string) *widget.RichText {
+	return &widget.RichText{
+		Wrapping:   fyne.TextWrapWord,
+		Scroll:     container.ScrollNone,
+		Truncation: fyne.TextTruncateOff,
+		Segments: []widget.RichTextSegment{
+			&widget.TextSegment{
+				Text: choice,
+				Style: widget.RichTextStyle{
+					TextStyle: fyne.TextStyle{
+						Bold: true,
+					},
+					Alignment: fyne.TextAlignCenter,
+					SizeName:  "OptionFontSize",
+					ColorName: "OptionColor",
+				},
+			},
+		},
+	}
+}
+
+type ClickText struct {
+	question *TestQuestion
+	choice   testparts.GormQuestionChoice
+	*widget.RichText
+}
+
+func NewClickText(question *TestQuestion, choice testparts.GormQuestionChoice) *ClickText {
+	ct := &ClickText{
+		RichText: formatChoice(
+			fmt.Sprintf("%c.  %s", 'A'+question.OptionList.Size(), choice.Choice)),
+		question: question,
+		choice:   choice,
+	}
+	ct.ExtendBaseWidget(ct)
+	return ct
+}
+
+func (ct *ClickText) Tapped(p *fyne.PointEvent) {
+	ct.question.Answer = ct.choice.Choice
+	ct.SetSelected()
+}
+
+func (ct *ClickText) SetSelected() {
+	ct.question.OptionList.Each(
+		func(_ int, c *ClickText) {
+			style := &c.RichText.Segments[0].(*widget.TextSegment).Style
+			style.ColorName = "OptionColor"
+			style.TextStyle.Italic = false
+			if c == ct {
+				style.ColorName = "OptionColorSelected"
+				style.TextStyle.Italic = true
+			}
+			c.RichText.Refresh()
+		})
+}
+
+func (ct *ClickText) Correct() bool {
+	return ct.choice.Answer
 }

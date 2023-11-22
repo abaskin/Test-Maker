@@ -45,16 +45,19 @@ func (fb *FancyButton) TappedSecondary(p *fyne.PointEvent) {
 	}
 }
 
-func New(content *fyne.Container, btnColor color.NRGBA,
+func New(content *fyne.Container, btnColor color.RGBA,
 	tapped func(*fyne.PointEvent, *FancyButton), data interface{}) *FancyButton {
 	fb := &FancyButton{
 		OnTapped: tapped,
 		Data:     data,
 	}
-	fb.Canvas = canvas.NewRectangle(btnColor)
+	fb.Canvas = &canvas.Rectangle{
+		FillColor:    btnColor,
+		CornerRadius: 5,
+	}
 	fb.Card = widget.NewCard(
 		"", "",
-		container.NewMax(
+		container.NewStack(
 			fb.Canvas,
 			content,
 		),

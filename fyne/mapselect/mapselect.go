@@ -19,6 +19,10 @@ func NewMapSelect(onChanged func(string)) *MapSelect {
 	return sel
 }
 
+func (m *MapSelect) SetChanged(onChanged func(string)) {
+	m.OnChanged = onChanged
+}
+
 func (m *MapSelect) Add(key string, value interface{}) {
 	m.options.Put(key, value)
 	m.Options = append(m.Options, key)
@@ -32,4 +36,8 @@ func (m *MapSelect) Key() interface{} {
 func (m *MapSelect) Clear() {
 	m.options.Clear()
 	m.Options = []string{}
+}
+
+func (m *MapSelect) Empty() bool {
+	return m.options.Size() == 0
 }
