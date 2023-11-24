@@ -53,6 +53,7 @@ func (q *TestQuestion) Ask(countDown *widget.ProgressBar, content *fyne.Containe
 	fullWindow *fyne.Container, qDone *sync.WaitGroup) {
 	*content = *q.Show()
 	content.Refresh()
+	fullWindow.Refresh()
 
 	if q.next != nil {
 		q.next.OnTapped = func() { qDone.Done() }
@@ -60,7 +61,6 @@ func (q *TestQuestion) Ask(countDown *widget.ProgressBar, content *fyne.Containe
 
 	countDown.Min = 0
 	countDown.Max = float64(q.allocTime.Milliseconds())
-	countDown.TextFormatter = func() string { return "" }
 
 	timeRemain := q.allocTime
 	qTicker := testparts.NewTicker(time.Millisecond, nil,
