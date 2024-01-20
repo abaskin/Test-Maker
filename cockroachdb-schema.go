@@ -64,6 +64,7 @@ type GormQuestionChoice struct {
 	gorm.Model
 	GormQuestionID uint
 	Choice         string
+	Feedback       string
 	Answer         bool
 }
 
