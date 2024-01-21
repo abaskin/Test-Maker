@@ -17,7 +17,6 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/rwestlund/gotex v0.0.0-20170412080108-3c68d9bfff3b
 	github.com/thanhpk/randstr v1.0.6
-	github.com/thoas/go-funk v0.9.3
 	golang.org/x/oauth2 v0.13.0
 	google.golang.org/api v0.148.0
 	gorm.io/datatypes v1.2.0
