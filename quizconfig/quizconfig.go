@@ -10,7 +10,6 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/abaskin/testparts"
 	"github.com/abaskin/testparts/fyne/progressmodel"
-	queue "github.com/antigloss/go/container/concurrent/queue"
 	"github.com/daichi-m/go18ds/maps/linkedhashmap"
 	"github.com/ebitengine/oto/v3"
 	"github.com/looplab/fsm"
@@ -63,7 +62,7 @@ type State_t struct {
 	ClientWait             *sync.WaitGroup
 	ClientList             *linkedhashmap.Map[string, *Client_t]
 	RecvChan, ActionChan   chan *ClientData_t
-	QuestionStack          *queue.LockfreeQueue[*testparts.GormQuestion]
+	QuestionChan           chan *testparts.GormQuestion
 	Name, UUID, AvatarName string
 	Color                  color.Color
 	Result                 map[Answer_t]*Result_t
