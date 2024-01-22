@@ -6,6 +6,7 @@ require (
 	fyne.io/fyne/v2 v2.4.1
 	fyne.io/x/fyne v0.0.0-20231020065621-89b4a4aea27d
 	github.com/aldinokemal/go-aiken v0.0.0-20200804023432-8ed1c267e9cf
+	github.com/antigloss/go v1.19.3
 	github.com/chonla/roman-number-go v0.0.0-20181101035413-6768129de021
 	github.com/daichi-m/go18ds v1.12.1
 	github.com/ebitengine/oto/v3 v3.1.0
@@ -57,7 +58,7 @@ require (
 	github.com/yuin/goldmark v1.5.5 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	golang.org/x/crypto v0.14.0 // indirect
-	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e // indirect
+	golang.org/x/exp v0.0.0-20230111222715-75897c7a292a // indirect
 	golang.org/x/image v0.11.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/sync v0.4.0 // indirect
