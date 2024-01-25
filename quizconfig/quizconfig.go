@@ -9,6 +9,7 @@ import (
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/widget"
 	"github.com/abaskin/testparts"
+	"github.com/abaskin/testparts/aiclient"
 	"github.com/abaskin/testparts/fyne/progressmodel"
 	"github.com/daichi-m/go18ds/maps/linkedhashmap"
 	"github.com/ebitengine/oto/v3"
@@ -67,6 +68,7 @@ type State_t struct {
 	Color                  color.Color
 	Result                 map[Answer_t]*Result_t
 	Player                 *oto.Player
+	AiModel                aiclient.AiModel
 }
 
 type Client_t struct {
