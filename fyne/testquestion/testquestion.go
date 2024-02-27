@@ -2,6 +2,7 @@ package testquestion
 
 import (
 	"fmt"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -62,8 +63,13 @@ func (q *TestQuestion) Ask(countDown *widget.ProgressBar, content *fyne.Containe
 	countDown.Min = 0
 	countDown.Max = float64(q.allocTime.Milliseconds())
 
+	resolution := time.Millisecond
+	if runtime.GOOS == "windows" {
+		resolution = time.Millisecond * 50
+	}
+
 	timeRemain := q.allocTime
-	qTicker := testparts.NewTicker(time.Millisecond, nil,
+	qTicker := testparts.NewTicker(resolution, nil,
 		func() {
 			countDown.Value = float64(timeRemain.Milliseconds())
 			countDown.Refresh()
