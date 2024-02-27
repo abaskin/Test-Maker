@@ -2,7 +2,6 @@ package testquestion
 
 import (
 	"fmt"
-	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -22,6 +21,7 @@ type TestQuestion struct {
 	OptionList    *arraylist.List[*ClickText]
 	Answer        string
 	Done          bool
+	Resolution    time.Duration
 	allocTime     time.Duration
 	next          *widget.Button
 	correctAnswer string
@@ -63,9 +63,9 @@ func (q *TestQuestion) Ask(countDown *widget.ProgressBar, content *fyne.Containe
 	countDown.Min = 0
 	countDown.Max = float64(q.allocTime.Milliseconds())
 
-	resolution := time.Millisecond
-	if runtime.GOOS == "windows" {
-		resolution = time.Millisecond * 50
+	resolution := q.Resolution
+	if resolution.Nanoseconds() == 0 {
+		resolution = time.Millisecond
 	}
 
 	timeRemain := q.allocTime
