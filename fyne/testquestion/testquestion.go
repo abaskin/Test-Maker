@@ -74,7 +74,7 @@ func (q *TestQuestion) Ask(countDown *widget.ProgressBar, content *fyne.Containe
 			countDown.Value = float64(timeRemain.Milliseconds())
 			countDown.Refresh()
 			if timeRemain > 0 {
-				timeRemain -= time.Millisecond
+				timeRemain -= resolution
 			}
 		})
 
