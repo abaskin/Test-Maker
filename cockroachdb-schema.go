@@ -101,3 +101,23 @@ func (t *GormTest) ShuffleQuestions() {
 			t.Questions[i], t.Questions[j] = t.Questions[j], t.Questions[i]
 		})
 }
+
+func (t *GormTest) GetQuestion() *GormQuestion {
+	if len(t.Questions) == 0 {
+		return nil
+	}
+	question := &t.Questions[0]
+	switch {
+	case len(t.Questions) > 1:
+		t.Questions = t.Questions[1:]
+	default:
+		t.Questions = make([]GormQuestion, 0)
+	}
+	return question
+}
+
+func (t *GormTest) PutQuestion(question *GormQuestion) {
+	question.ShuffleChoices()
+	t.Questions = append(t.Questions, *question)
+	t.ShuffleQuestions()
+}
