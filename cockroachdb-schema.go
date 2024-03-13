@@ -1,6 +1,7 @@
 package testparts
 
 import (
+	"math/rand"
 	"time"
 
 	"gorm.io/datatypes"
@@ -85,4 +86,18 @@ type GormTestSession struct {
 	QuestionTime       time.Duration
 	StartDateTime      time.Time
 	EndDateTime        time.Time
+}
+
+func (q *GormQuestion) ShuffleChoices() {
+	rand.Shuffle(len(q.Choices),
+		func(i, j int) {
+			q.Choices[i], q.Choices[j] = q.Choices[j], q.Choices[i]
+		})
+}
+
+func (t *GormTest) ShuffleQuestions() {
+	rand.Shuffle(len(t.Questions),
+		func(i, j int) {
+			t.Questions[i], t.Questions[j] = t.Questions[j], t.Questions[i]
+		})
 }

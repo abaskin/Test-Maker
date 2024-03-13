@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/daichi-m/go18ds/lists/arraylist"
 	"github.com/google/generative-ai-go/genai"
-	"github.com/monitor1379/yagods/lists/arraylist"
 	"google.golang.org/api/option"
 )
 

@@ -46,6 +46,8 @@ func CloseCockroachDB(db *gorm.DB) error {
 	return err
 }
 
+// ---- Preferences ----
+
 type Preference struct {
 	dsn string
 }
