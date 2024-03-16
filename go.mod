@@ -13,6 +13,7 @@ require (
 	github.com/enriquebris/goconcurrentqueue v0.7.0
 	github.com/golang-module/carbon/v2 v2.3.6
 	github.com/google/generative-ai-go v0.5.0
+	github.com/hako/durafmt v0.0.0-20210608085754-5c1018a4e16b
 	github.com/looplab/fsm v1.0.1
 	github.com/monitor1379/yagods v1.13.0
 	github.com/nwillc/genfuncs v0.20.2

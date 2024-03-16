@@ -13,6 +13,7 @@ import (
 	"github.com/abaskin/testparts"
 	"github.com/daichi-m/go18ds/lists/arraylist"
 	"github.com/daichi-m/go18ds/maps/linkedhashmap"
+	"github.com/hako/durafmt"
 )
 
 type TestQuestion struct {
@@ -33,6 +34,7 @@ func NewTestQuestion(question *testparts.GormQuestion, allocTime time.Duration,
 		Question:   question,
 		OptionList: arraylist.New[*ClickText](),
 		Done:       false,
+		Resolution: time.Millisecond,
 		allocTime:  allocTime,
 		next:       next,
 	}
@@ -60,21 +62,19 @@ func (q *TestQuestion) Ask(countDown *widget.ProgressBar, content *fyne.Containe
 		q.next.OnTapped = func() { qDone.Done() }
 	}
 
+	timeRemain := q.allocTime
 	countDown.Min = 0
 	countDown.Max = float64(q.allocTime.Milliseconds())
+	countDown.TextFormatter =
+		func() string {
+			return durafmt.Parse(timeRemain.Truncate(time.Second)).String()
+		}
 
-	resolution := q.Resolution
-	if resolution.Nanoseconds() == 0 {
-		resolution = time.Millisecond
-	}
-
-	timeRemain := q.allocTime
-	qTicker := testparts.NewTicker(resolution, nil,
+	qTicker := testparts.NewTicker(q.Resolution, nil,
 		func() {
-			countDown.Value = float64(timeRemain.Milliseconds())
-			countDown.Refresh()
+			countDown.SetValue(float64(timeRemain.Milliseconds()))
 			if timeRemain > 0 {
-				timeRemain -= resolution
+				timeRemain -= q.Resolution
 			}
 		})
 
