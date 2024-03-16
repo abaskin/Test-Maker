@@ -78,9 +78,8 @@ type Client_t struct {
 }
 
 type Result_t struct {
-	Text     string
-	Feedback string
-	Icon     *canvas.Image
+	Text string
+	Icon *canvas.Image
 }
 
 type Transport_t interface {

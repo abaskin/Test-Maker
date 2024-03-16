@@ -50,10 +50,7 @@ func NewTestQuestion(question *testparts.GormQuestion, allocTime time.Duration,
 	}
 	q.Options.onChanged = func(choice string) {
 		q.Answer = choice
-		q.Feedback = &q.Question.Choices[slices.IndexFunc(q.Question.Choices,
-			func(c testparts.GormQuestionChoice) bool {
-				return choice == c.Choice
-			})].Feedback
+		q.SetFeedback()
 	}
 	return q
 }
@@ -132,6 +129,13 @@ func (q *TestQuestion) AnswerID() uint {
 		}
 	}
 	return 0
+}
+
+func (q *TestQuestion) SetFeedback() {
+	q.Feedback = &q.Question.Choices[slices.IndexFunc(q.Question.Choices,
+		func(c testparts.GormQuestionChoice) bool {
+			return q.Answer == c.Choice
+		})].Feedback
 }
 
 func (q *TestQuestion) SetSelect(keyPressed fyne.KeyName) {
@@ -237,6 +241,7 @@ func NewClickText(question *TestQuestion, choice testparts.GormQuestionChoice) *
 
 func (ct *ClickText) Tapped(p *fyne.PointEvent) {
 	ct.question.Answer = ct.choice.Choice
+	ct.question.SetFeedback()
 	ct.SetSelected()
 }
 
