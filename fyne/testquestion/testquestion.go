@@ -2,6 +2,7 @@ package testquestion
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -20,12 +21,13 @@ type TestQuestion struct {
 	Question      *testparts.GormQuestion
 	Options       *LabelRadioGroup
 	OptionList    *arraylist.List[*ClickText]
-	Answer        string
 	Done          bool
 	Resolution    time.Duration
+	CorrectAnswer *string
+	Answer        string
+	Feedback      *string
 	allocTime     time.Duration
 	next          *widget.Button
-	correctAnswer string
 }
 
 func NewTestQuestion(question *testparts.GormQuestion, allocTime time.Duration,
@@ -39,15 +41,19 @@ func NewTestQuestion(question *testparts.GormQuestion, allocTime time.Duration,
 		next:       next,
 	}
 	q.Options = NewLabelRadioGroup(q, []string{}, nil)
-	for _, choice := range q.Question.Choices {
+	for i, choice := range q.Question.Choices {
 		q.Options.Add(choice.Choice)
 		q.OptionList.Add(NewClickText(q, choice))
 		if choice.Answer {
-			q.correctAnswer = choice.Choice
+			q.CorrectAnswer = &q.Question.Choices[i].Choice
 		}
 	}
-	q.Options.onChanged = func(s string) {
-		q.Answer = s
+	q.Options.onChanged = func(choice string) {
+		q.Answer = choice
+		q.Feedback = &q.Question.Choices[slices.IndexFunc(q.Question.Choices,
+			func(c testparts.GormQuestionChoice) bool {
+				return choice == c.Choice
+			})].Feedback
 	}
 	return q
 }
@@ -116,7 +122,7 @@ func (q *TestQuestion) Show() *fyne.Container {
 }
 
 func (q *TestQuestion) Correct() bool {
-	return q.Answer == q.correctAnswer
+	return q.Answer == *q.CorrectAnswer
 }
 
 func (q *TestQuestion) AnswerID() uint {
