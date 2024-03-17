@@ -69,6 +69,7 @@ type State_t struct {
 	Result                 map[Answer_t]*Result_t
 	Player                 *oto.Player
 	AiModel                aiclient.AiModel
+	Flags                  map[string]bool
 }
 
 type Client_t struct {
@@ -78,8 +79,8 @@ type Client_t struct {
 }
 
 type Result_t struct {
-	Text string
-	Icon *canvas.Image
+	Text, Feedback string
+	Icon           *canvas.Image
 }
 
 type Transport_t interface {
